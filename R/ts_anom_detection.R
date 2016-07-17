@@ -64,7 +64,7 @@ AnomalyDetectionTs <- function(x, max_anoms = 0.10, direction = 'pos',
                                alpha = 0.05, only_last = NULL, threshold = 'None',
                                e_value = FALSE, longterm = FALSE, piecewise_median_period_weeks = 2, plot = FALSE,
                                y_log = FALSE, xlabel = '', ylabel = 'count',
-                               title = NULL, verbose=FALSE, na.rm = FALSE){
+                               title = NULL, verbose=FALSE, na.rm = FALSE, event_lines = NULL, event_line_color = "gray60"){
 
   # Check for supported inputs types
   if(!is.data.frame(x)){
@@ -317,7 +317,11 @@ AnomalyDetectionTs <- function(x, max_anoms = 0.10, direction = 'pos',
       day_rng = get_range(x_subset_single_day, index=2, y_log=y_log)
       yrange = c(min(week_rng[1],day_rng[1]), max(week_rng[2],day_rng[2]))
       xgraph <- add_day_labels_datetime(xgraph, breaks=breaks, start=as.POSIXlt(min(x_subset_week[[1]]), tz="UTC"), end=as.POSIXlt(max(x_subset_single_day[[1]]), tz="UTC"), days_per_line=num_days_per_line)
-      xgraph <- xgraph + ggplot2::labs(x=xlabel, y=ylabel, title=plot_title)
+      
+	  # Added line
+	  xgraph <- add_event_lines(xgraph, event_line_color)
+      
+	  xgraph <- xgraph + ggplot2::labs(x=xlabel, y=ylabel, title=plot_title)
     }else{
       xgraph <- ggplot2::ggplot(x, ggplot2::aes_string(x="timestamp", y="count")) + ggplot2::theme_bw() + ggplot2::theme(panel.grid.major = ggplot2::element_line(colour = "gray60"), panel.grid.major.y = ggplot2::element_blank(), panel.grid.minor = ggplot2::element_blank(), text=ggplot2::element_text(size = 14))
       xgraph <- xgraph + ggplot2::geom_line(data=x, ggplot2::aes_string(colour=color_name), alpha=alpha)

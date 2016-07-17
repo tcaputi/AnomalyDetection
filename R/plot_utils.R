@@ -77,3 +77,10 @@ add_day_labels_datetime <- function(tsplot, breaks = 6, start = NULL, end = NULL
   return(outplot)
 }
 
+add_event_lines <- function(tsplot, event_lines = NULL, color = "gray60") {
+  if (!is.null(event_lines)) {
+    outplot <- outplot + ggplot2::geom_vline(xintercept = as.numeric(event_lines), color)
+  }
+  
+  return(outplot)
+}
